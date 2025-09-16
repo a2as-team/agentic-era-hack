@@ -6,10 +6,6 @@ install:
 playground:
 	@echo "==============================================================================="
 	@echo "| 🚀 Starting your agent playground...                                        |"
-	@echo "|                                                                             |"
-	@echo "| 💡 Try asking: What's the weather in San Francisco?                         |"
-	@echo "|                                                                             |"
-	@echo "| 🔍 IMPORTANT: Select the 'app' folder to interact with your agent.          |"
 	@echo "==============================================================================="
 	uv run adk web agents --port 8501 --reload_agents
 
