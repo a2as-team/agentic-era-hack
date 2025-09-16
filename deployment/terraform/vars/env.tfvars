@@ -1,19 +1,11 @@
-# Project name used for resource naming
-project_name = "skillscape-hackathon-ia"
-
-# Your Production Google Cloud project id
-prod_project_id = "your-production-project-id"
-
-# Your Staging / Test Google Cloud project id
-staging_project_id = "your-staging-project-id"
-
-# Your Google Cloud project ID that will be used to host the Cloud Build pipelines.
-cicd_runner_project_id = "your-cicd-project-id"
-# Name of the host connection you created in Cloud Build
-host_connection_name = "git-skillscape-hackathon-ia"
-
-# Name of the repository you added to Cloud Build
-repository_name = "skillscape-hackathon-ia"
-
-# The Google Cloud region you will use to deploy the infrastructure
+staging_project_id = "qwiklabs-gcp-03-c44e7446f764"
+prod_project_id = "qwiklabs-gcp-02-9e29b78d2367"
+cicd_runner_project_id = "qwiklabs-gcp-02-9e29b78d2367"
 region = "us-central1"
+repository_name = "agentic-era-hack"
+repository_owner = "thlesaux-sk5"
+host_connection_name = "git-agentic-era-hack"
+create_cb_connection = true
+create_repository = false
+github_app_installation_id = "86184038"
+github_pat_secret_id = "git-agentic-era-hack-github-oauthtoken-281870"
