@@ -2,25 +2,17 @@ from google.adk.tools import google_search
 import os
 import google.auth
 from google.adk.agents import Agent
+from .subagents import upload_agent
 
 _, project_id = google.auth.default()
 os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
-# A list of tech news RSS feeds to watch
-TECH_FEEDS = [
-    "https://www.theverge.com/rss/index.xml",
-    "https://www.infoworld.com/category/cloud-computing/index.rss",
-    "https://www.cio.com/category/cloud-computing/index.rss",
-    "https://feeds.feedburner.com/TechCrunch/startups"
-]
-
 main_prompt = """
 You are an assistant specialized in **finding relevant articles related to a domain or technology** from a **list of provided websites**.
 Your role is to search, filter, and summarize articles into concise previews for the user.
 When a user asks for information on a tech topic (e.g., *"AI trends"* or *"latest in cloud computing"*), use **google\_search** to find relevant articles.
-Prefer finding articles from the **TECH\_FEED list**.
 ---
 
 **Instructions:**
@@ -51,10 +43,9 @@ Prefer finding articles from the **TECH\_FEED list**.
    * For each article:
 
      1. **Extract the title**
-     2. **Provide the hyperlink**
+     2. **Provide the link to the article**
      3. **Generate a preview (abstract)** — a concise summary of the article (3–5 sentences).
-
-5. **Present Results.**
+     4. **Present Results.**
 
    * Display the list in a structured, easy-to-read format.
 
@@ -73,10 +64,11 @@ A clean list with:
 
 **TECH FEED LIST**
 
-- "https://www.theverge.com/rss/index.xml",
-- "https://www.infoworld.com/category/cloud-computing/index.rss",
-- "https://www.cio.com/category/cloud-computing/index.rss",
+- "https://www.theverge.com/",
+- "https://www.infoworld.com/category/cloud-computing/",
+- "https://www.cio.com/category/cloud-computing/",
 - "https://feeds.feedburner.com/TechCrunch/startups"
+- "https://www.medium.com"
 
 ---
 
@@ -92,6 +84,6 @@ root_agent = Agent(
     name="articles_ingestion",
     model="gemini-2.5-flash",
     instruction=main_prompt,
+    #sub_agents=[upload_agent],
     tools=[google_search]
 )
-
