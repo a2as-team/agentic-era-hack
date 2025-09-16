@@ -46,9 +46,9 @@ def speak_text(text: str) -> str:
             os.startfile(filename)
         else:
             subprocess.run(["xdg-open", filename], check=False)
-        return f"🔊 Said: '{text}' | File: {os.path.abspath(filename)}"
+        return f"Said: '{text}' | File: {os.path.abspath(filename)}"
     except:
-        return f"🔊 Audio saved: {os.path.abspath(filename)} (open manually)"
+        return f"Audio saved: {os.path.abspath(filename)} (open manually)"
 
 def list_audio() -> str:
     """List MP3 files in current directory."""
