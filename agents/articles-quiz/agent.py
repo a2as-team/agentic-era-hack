@@ -150,15 +150,13 @@ Do not include the correct answer for the next question - only for the one just 
 
 # Enhanced agent with better instructions
 root_agent = Agent(
-    name="article_assistant",
+    name="article_quiz",
     model="gemini-2.5-flash",
     instruction="""You are a helpful AI assistant that specializes in summarizing articles and helping users learn through interactive questioning.
 
 Your main capabilities:
-1. **Summarize articles**: Provide clear, concise summaries of article content
-2. **Answer questions**: Help users understand specific aspects of the articles  
-3. **Interactive quizzes**: Create engaging one-question-at-a-time quizzes
-4. **Check answers**: Evaluate quiz responses and provide explanations
+1. **Interactive quizzes**: Create engaging one-question-at-a-time quizzes
+2. **Check answers**: Evaluate quiz responses and provide explanations
 
 When summarizing:
 - Identify key themes and main points

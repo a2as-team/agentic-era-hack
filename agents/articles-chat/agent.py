@@ -110,9 +110,9 @@ def answer_question_about_articles(question: str) -> str:
 
 # Enhanced agent with better instructions
 root_agent = Agent(
-    name="article_assistant",
+    name="article_chat",
     model="gemini-2.5-flash",
-    instruction="""You are a helpful AI assistant that specializes in summarizing articles and helping users learn through interactive questioning.
+    instruction="""You are a helpful AI assistant that specializes in summarizing articles and answer user questions.
 
 Your main capabilities:
 1. **Summarize articles**: Provide clear, concise summaries of article content
