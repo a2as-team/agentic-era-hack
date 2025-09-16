@@ -70,44 +70,6 @@ def read_articles() -> List[str]:
     return articles
 
 
-def get_articles_summary(query: str = "") -> str:
-    """
-    Get a summary of all articles, optionally filtered by a query.
-
-    Args:
-        query: Optional query to focus the summary on specific topics
-    """
-    articles = read_articles()
-
-    if not articles or articles[0].startswith("No"):
-        return articles[0] if articles else "No articles available."
-
-    combined_content = "\n\n".join(articles)
-
-    if query:
-        return f"Here are the articles with focus on '{query}':\n\n{combined_content}\n\nPlease provide a summary focusing on: {query}"
-    else:
-        return f"Here are all the articles:\n\n{combined_content}\n\nPlease provide a comprehensive summary of these articles."
-
-
-def answer_question_about_articles(question: str) -> str:
-    """
-    Answer specific questions about the articles content.
-
-    Args:
-        question: The user's question about the articles
-    """
-    articles = read_articles()
-    print(articles)
-
-    if not articles or articles[0].startswith("No"):
-        return "No articles available to answer questions about."
-
-    combined_content = "\n\n".join(articles)
-
-    return f"Based on these articles:\n\n{combined_content}\n\nPlease answer this question: {question}"
-
-
 def start_quiz(topic: str = "", difficulty: str = "medium") -> str:
     """
     Start an interactive quiz session based on the articles content.
@@ -185,6 +147,7 @@ Please:
 
 Do not include the correct answer for the next question - only for the one just answered."""
 
+
 # Enhanced agent with better instructions
 root_agent = Agent(
     name="article_assistant",
@@ -219,22 +182,15 @@ When checking answers:
 
 Always be helpful, patient, and encouraging in your interactions.""",
     tools=[
-        get_articles_summary,
-        answer_question_about_articles,
         start_quiz,
         check_answer_and_continue,
     ],
 )
 
-# Example usage and interaction loop
 if __name__ == "__main__":
     print("Article Assistant is ready!")
     print("You can ask me to:")
-    print("- Summarize the articles")
-    print("- Answer questions about the content")
-    print("- Start an interactive quiz (recommended)")
-    print("- Generate all quiz questions at once")
-    print("- Check individual quiz answers")
+    print("- Start an interactive quiz")
     print("\nType 'quit' to exit\n")
 
     while True:
