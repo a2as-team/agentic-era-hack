@@ -108,9 +108,89 @@ def answer_question_about_articles(question: str) -> str:
     return f"Based on these articles:\n\n{combined_content}\n\nPlease answer this question: {question}"
 
 
+def start_quiz(topic: str = "", difficulty: str = "medium") -> str:
+    """
+    Start an interactive quiz session based on the articles content.
+
+    Args:
+        topic: Optional specific topic to focus quiz questions on
+        difficulty: Quiz difficulty level (easy, medium, hard)
+    """
+    articles = read_articles()
+
+    if not articles or articles[0].startswith("No"):
+        return "No articles available to generate quiz questions from."
+
+    combined_content = "\n\n".join(articles)
+
+    focus_instruction = f" focusing on {topic}" if topic else ""
+
+    return f"""Based on these articles:\n\n{combined_content}
+
+Please start an interactive quiz session{focus_instruction} with {difficulty} difficulty. 
+
+Instructions for the quiz:
+1. Generate ONE question at a time (not all questions at once)
+2. Present the question with 4 multiple choice options (A, B, C, D)
+3. DO NOT include the correct answer in your response
+4. Wait for the user's answer before providing the next question
+5. After each answer, tell them if they're correct/incorrect and provide a brief explanation
+6. Keep track of their score
+7. Generate a total of 5 questions for the complete quiz
+
+Start with the first question now. Format it as:
+Question 1/5: [Question text]
+A) [Option A]
+B) [Option B]
+C) [Option C] 
+D) [Option D]
+
+Please provide your answer (A, B, C, or D)."""
+
+
+def check_answer_and_continue(user_answer: str, current_question: str = "") -> str:
+    """
+    Check the user's answer and provide the next question or quiz completion.
+
+    Args:
+        user_answer: The user's answer (A, B, C, or D)
+        current_question: The current question being answered (optional for context)
+    """
+    articles = read_articles()
+
+    if not articles or articles[0].startswith("No"):
+        return "No articles available to check answers against."
+
+    combined_content = "\n\n".join(articles)
+
+    return f"""Based on these articles:\n\n{combined_content}
+
+The user answered: {user_answer}
+{f"For the question: {current_question}" if current_question else ""}
+
+Please:
+1. Check if this answer is correct or incorrect
+2. Provide a brief explanation of the correct answer with reference to the articles
+3. Update the quiz score 
+4. If this was not the final question (5/5), provide the NEXT question in the same format:
+   Question X/5: [Question text]
+   A) [Option A]  
+   B) [Option B]
+   C) [Option C]
+   D) [Option D]
+   
+   Please provide your answer (A, B, C, or D).
+
+5. If this was the final question, provide the final score and a summary of performance
+
+Do not include the correct answer for the next question - only for the one just answered."""
+
+
+# Keep the old functions for backward compatibility
 def generate_quiz_questions(topic: str = "", difficulty: str = "medium") -> str:
     """
     Generate quiz questions based on the articles content.
+    NOTE: This function shows all questions at once. Use start_quiz() for interactive quizzes.
 
     Args:
         topic: Optional specific topic to focus quiz questions on
@@ -142,6 +222,7 @@ Make sure the questions test comprehension and key concepts from the articles.""
 def check_quiz_answer(question: str, user_answer: str) -> str:
     """
     Check if a quiz answer is correct and provide explanation.
+    NOTE: This is for single answer checking. Use check_answer_and_continue() for interactive quizzes.
 
     Args:
         question: The quiz question
@@ -174,7 +255,7 @@ root_agent = Agent(
 Your main capabilities:
 1. **Summarize articles**: Provide clear, concise summaries of article content
 2. **Answer questions**: Help users understand specific aspects of the articles  
-3. **Generate quizzes**: Create quiz questions to test comprehension
+3. **Interactive quizzes**: Create engaging one-question-at-a-time quizzes
 4. **Check answers**: Evaluate quiz responses and provide explanations
 
 When summarizing:
@@ -183,11 +264,13 @@ When summarizing:
 - Organize information logically
 - Highlight important insights
 
-When generating quiz questions:
+When running interactive quizzes (start_quiz):
+- Present ONE question at a time, never show all questions together
+- Do NOT include correct answers when presenting questions
+- Wait for user response before showing the next question
+- Keep track of the user's score throughout the quiz
+- Provide encouraging feedback after each answer
 - Create questions that test real understanding, not just memorization
-- Include a mix of factual recall and conceptual understanding
-- Provide clear, unambiguous answer choices
-- Always include the correct answer
 
 When checking answers:
 - Be encouraging and educational
@@ -199,8 +282,10 @@ Always be helpful, patient, and encouraging in your interactions.""",
     tools=[
         get_articles_summary,
         answer_question_about_articles,
-        generate_quiz_questions,
-        check_quiz_answer,
+        start_quiz,
+        check_answer_and_continue,
+        generate_quiz_questions,  # Keep for backward compatibility
+        check_quiz_answer,  # Keep for backward compatibility
     ],
 )
 
@@ -210,8 +295,9 @@ if __name__ == "__main__":
     print("You can ask me to:")
     print("- Summarize the articles")
     print("- Answer questions about the content")
-    print("- Generate quiz questions")
-    print("- Check your quiz answers")
+    print("- Start an interactive quiz (recommended)")
+    print("- Generate all quiz questions at once")
+    print("- Check individual quiz answers")
     print("\nType 'quit' to exit\n")
 
     while True:

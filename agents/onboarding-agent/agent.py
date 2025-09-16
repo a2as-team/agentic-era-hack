@@ -21,7 +21,7 @@ os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
-main_prompt="""
+main_prompt = """
 You are an assistant specialized in **onboarding new users into the application**, guiding them through career planning, skill analysis, and action plans for professional growth.
 
 ---
