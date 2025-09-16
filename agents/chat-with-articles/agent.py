@@ -185,67 +185,6 @@ Please:
 
 Do not include the correct answer for the next question - only for the one just answered."""
 
-
-# Keep the old functions for backward compatibility
-def generate_quiz_questions(topic: str = "", difficulty: str = "medium") -> str:
-    """
-    Generate quiz questions based on the articles content.
-    NOTE: This function shows all questions at once. Use start_quiz() for interactive quizzes.
-
-    Args:
-        topic: Optional specific topic to focus quiz questions on
-        difficulty: Quiz difficulty level (easy, medium, hard)
-    """
-    articles = read_articles()
-
-    if not articles or articles[0].startswith("No"):
-        return "No articles available to generate quiz questions from."
-
-    combined_content = "\n\n".join(articles)
-
-    focus_instruction = f" focusing on {topic}" if topic else ""
-
-    return f"""Based on these articles:\n\n{combined_content}
-
-Please generate 5 {difficulty}-level quiz questions{focus_instruction}. 
-Format each question as:
-Q1: [Question]
-A) [Option A]
-B) [Option B] 
-C) [Option C]
-D) [Option D]
-Correct Answer: [Letter]
-
-Make sure the questions test comprehension and key concepts from the articles."""
-
-
-def check_quiz_answer(question: str, user_answer: str) -> str:
-    """
-    Check if a quiz answer is correct and provide explanation.
-    NOTE: This is for single answer checking. Use check_answer_and_continue() for interactive quizzes.
-
-    Args:
-        question: The quiz question
-        user_answer: The user's answer (A, B, C, or D)
-    """
-    articles = read_articles()
-
-    if not articles or articles[0].startswith("No"):
-        return "No articles available to check answers against."
-
-    combined_content = "\n\n".join(articles)
-
-    return f"""Based on these articles:\n\n{combined_content}
-
-For this question: {question}
-User answered: {user_answer}
-
-Please check if this answer is correct and provide:
-1. Whether the answer is correct or incorrect
-2. The correct answer with explanation
-3. Reference to the relevant information from the articles"""
-
-
 # Enhanced agent with better instructions
 root_agent = Agent(
     name="article_assistant",
@@ -284,8 +223,6 @@ Always be helpful, patient, and encouraging in your interactions.""",
         answer_question_about_articles,
         start_quiz,
         check_answer_and_continue,
-        generate_quiz_questions,  # Keep for backward compatibility
-        check_quiz_answer,  # Keep for backward compatibility
     ],
 )
 
