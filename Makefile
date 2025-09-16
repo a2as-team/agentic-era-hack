@@ -11,7 +11,7 @@ playground:
 	@echo "|                                                                             |"
 	@echo "| 🔍 IMPORTANT: Select the 'app' folder to interact with your agent.          |"
 	@echo "==============================================================================="
-	uv run adk web . --port 8501 --reload_agents
+	uv run adk web agents --port 8501 --reload_agents
 
 # Deploy the agent remotely
 backend:
