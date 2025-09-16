@@ -19,7 +19,7 @@ def speak_text(text: str) -> str:
     
     # French or English?
     is_french = any(w in text.lower() for w in ["bonjour", "salut", "merci"]) or "ç" in text
-    lang = "fr-FR" if is_french else "en-US"
+    lang = "fr-FR" 
     
     # Generate audio
     response = client.synthesize_speech(
@@ -37,18 +37,18 @@ def speak_text(text: str) -> str:
     filename = f"speech_{datetime.now().strftime('%H%M%S')}.mp3"
     with open(filename, "wb") as f:
         f.write(response.audio_content)
-    
-    # Play file
-    try:
-        if platform.system() == "Darwin":
-            subprocess.run(["open", filename], check=False)
-        elif platform.system() == "Windows":
-            os.startfile(filename)
-        else:
-            subprocess.run(["xdg-open", filename], check=False)
-        return f"Said: '{text}' | File: {os.path.abspath(filename)}"
-    except:
-        return f"Audio saved: {os.path.abspath(filename)} (open manually)"
+        print('Audio content written to file "output.mp3"')
+
+
+    # Open in browser with HTML player
+    player_url = f"file://{os.path.abspath('audio_player.html')}?file={filename}"
+    if platform.system() == "Darwin":
+        subprocess.run(["open", player_url], check=False)
+    elif platform.system() == "Windows":
+        subprocess.run(["start", player_url], shell=True, check=False)
+    else:
+        subprocess.run(["xdg-open", player_url], check=False)
+    return f"Said: '{text}' | Audio playing in browser: {filename}"
 
 def list_audio() -> str:
     """List MP3 files in current directory."""
