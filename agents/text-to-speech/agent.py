@@ -1,11 +1,11 @@
 import os
-import subprocess
-import platform
+import webbrowser
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import google.auth
 from google.adk.agents import Agent
 from google.cloud import texttospeech
+from google.cloud import storage
 
 # Config Google Cloud
 _, project_id = google.auth.default()
@@ -33,22 +33,31 @@ def speak_text(text: str) -> str:
         )
     )
     
-    # Save file
+    # Save file locally and upload to GCP bucket
     filename = f"speech_{datetime.now().strftime('%H%M%S')}.mp3"
     with open(filename, "wb") as f:
         f.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+    
+    # Upload to GCP bucket
+    bucket_name = "qwiklabs-gcp-03-c44e7446f764-skillscape-hackathon-ia-tts-data"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+    blob.upload_from_filename(filename)
+    
+    # Generate authenticated URL (valid for 1 hour)
+    from datetime import timedelta
+    authenticated_url = blob.generate_signed_url(
+        version="v4",
+        expiration=timedelta(hours=1),
+        method="GET"
+    )
 
 
     # Open in browser with HTML player
-    player_url = f"file://{os.path.abspath('audio_player.html')}?file={filename}"
-    if platform.system() == "Darwin":
-        subprocess.run(["open", player_url], check=False)
-    elif platform.system() == "Windows":
-        subprocess.run(["start", player_url], shell=True, check=False)
-    else:
-        subprocess.run(["xdg-open", player_url], check=False)
-    return f"Said: '{text}' | Audio playing in browser: {filename}"
+    player_url = f"file://{os.path.abspath('audio_player.html')}?file={authenticated_url}"
+    webbrowser.open(player_url)
+    return f"Said: '{text}' | Audio playing in browser from GCP: {authenticated_url}"
 
 def list_audio() -> str:
     """List MP3 files in current directory."""

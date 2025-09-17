@@ -50,12 +50,16 @@
         const audioFile = urlParams.get('file');
         
         if (audioFile) {
+            // Vérifier si c'est une URL complète ou un nom de fichier
+            const isUrl = audioFile.startsWith('http');
+            const displayName = isUrl ? audioFile.split('/').pop() : audioFile;
+            
             // Mettre à jour l'interface
-            document.getElementById('filename').textContent = audioFile;
+            document.getElementById('filename').textContent = displayName;
             document.getElementById('audioPlayer').src = audioFile;
             
             // Mettre à jour le titre de la page
-            document.title = `Audio: ${audioFile}`;
+            document.title = `Audio: ${displayName}`;
         } else {
             // Chercher le fichier le plus récent
             const now = new Date();
