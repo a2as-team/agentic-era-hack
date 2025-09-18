@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: #f0f0f0;
+        }
+        .player {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .filename {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <h1>🎧 Lecteur Audio</h1>
+        <div class="filename" id="filename">Aucun fichier</div>
+        <audio id="audioPlayer" controls autoplay>
+            Votre navigateur ne supporte pas l'audio HTML5.
+        </audio>
+    </div>
+
+    <script>
+        // Récupérer le nom du fichier depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const audioFile = urlParams.get('file');
+        
+        if (audioFile) {
+            // Vérifier si c'est une URL complète ou un nom de fichier
+            const isUrl = audioFile.startsWith('http');
+            const displayName = isUrl ? audioFile.split('/').pop() : audioFile;
+            
+            // Mettre à jour l'interface
+            document.getElementById('filename').textContent = displayName;
+            document.getElementById('audioPlayer').src = audioFile;
+            
+            // Mettre à jour le titre de la page
+            document.title = `Audio: ${displayName}`;
+        } else {
+            // Chercher le fichier le plus récent
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + 
+                           now.getMinutes().toString().padStart(2, '0') + 
+                           now.getSeconds().toString().padStart(2, '0');
+            const recentFile = `speech_${timeStr}.mp3`;
+            
+            document.getElementById('filename').textContent = recentFile;
+            document.getElementById('audioPlayer').src = recentFile;
+            document.title = `Audio: ${recentFile}`;
+        }
+    </script>
+</body>
+</html>

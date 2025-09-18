@@ -1,11 +1,11 @@
 import os
-import subprocess
-import platform
+import webbrowser
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import google.auth
 from google.adk.agents import Agent
 from google.cloud import texttospeech
+from google.cloud import storage
 
 # Config Google Cloud
 _, project_id = google.auth.default()
@@ -19,7 +19,7 @@ def speak_text(text: str) -> str:
     
     # French or English?
     is_french = any(w in text.lower() for w in ["bonjour", "salut", "merci"]) or "ç" in text
-    lang = "fr-FR" if is_french else "en-US"
+    lang = "fr-FR" 
     
     # Generate audio
     response = client.synthesize_speech(
@@ -33,22 +33,31 @@ def speak_text(text: str) -> str:
         )
     )
     
-    # Save file
+    # Save file locally and upload to GCP bucket
     filename = f"speech_{datetime.now().strftime('%H%M%S')}.mp3"
     with open(filename, "wb") as f:
         f.write(response.audio_content)
     
-    # Play file
-    try:
-        if platform.system() == "Darwin":
-            subprocess.run(["open", filename], check=False)
-        elif platform.system() == "Windows":
-            os.startfile(filename)
-        else:
-            subprocess.run(["xdg-open", filename], check=False)
-        return f"Said: '{text}' | File: {os.path.abspath(filename)}"
-    except:
-        return f"Audio saved: {os.path.abspath(filename)} (open manually)"
+    # Upload to GCP bucket
+    bucket_name = "qwiklabs-gcp-03-c44e7446f764-skillscape-hackathon-ia-tts-data"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+    blob.upload_from_filename(filename)
+    
+    # Generate authenticated URL (valid for 1 hour)
+    from datetime import timedelta
+    authenticated_url = blob.generate_signed_url(
+        version="v4",
+        expiration=timedelta(hours=1),
+        method="GET"
+    )
+
+
+    # Open in browser with HTML player
+    player_url = f"file://{os.path.abspath('audio_player.html')}?file={authenticated_url}"
+    webbrowser.open(player_url)
+    return f"Said: '{text}' | Audio playing in browser from GCP: {authenticated_url}"
 
 def list_audio() -> str:
     """List MP3 files in current directory."""
