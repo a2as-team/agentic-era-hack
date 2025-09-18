@@ -87,7 +87,7 @@ Finally, **list** the titles of the key knowledge and skills to start with in bu
 """
 
 root_agent = Agent(
-    name="root_agent",
+    name="onboarding_agent",
     model="gemini-2.5-flash",
     instruction=main_prompt,
 )

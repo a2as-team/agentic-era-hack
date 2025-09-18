@@ -204,7 +204,7 @@ def generate_video(prompt: str) -> str:
 
 # Create the root agent using Agent
 root_agent = Agent(
-    name="text_to_video_agent",
+    name="text_to_video",
     model="gemini-2.0-flash-exp",
     tools=[generate_video],
     instruction="""You are an AI Video Generation Assistant powered by Google's VEO-3 technology.

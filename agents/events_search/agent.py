@@ -75,7 +75,7 @@ For each event, use the following format:
 * Encourage the user to refine the domain or specify location/date preferences if needed.
 """
 root_agent = Agent(
-    name="events_search_agent",
+    name="events_search",
     model="gemini-2.5-flash",
     instruction=main_prompt,
     tools=[google_search]
