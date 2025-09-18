@@ -18,7 +18,6 @@ from zoneinfo import ZoneInfo
 
 import google.auth
 from google.adk.agents import Agent
-from app.tools.storage_tools import upload_article_to_gcs
 
 _, project_id = google.auth.default()
 os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
@@ -66,9 +65,3 @@ root_agent = Agent(
     tools=[get_weather, get_current_time],
 )
 
-articles_agent = Agent(
-    name="articles_agent",
-    model="gemini-2.5-flash",
-    instruction="You are an agent that ingests articles and uploads them to a cloud storage service.",
-    tools=[upload_article_to_gcs],
-)
