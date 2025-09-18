@@ -68,7 +68,7 @@ def list_audio() -> str:
 
 # Agent
 root_agent = Agent(
-    name="root_agent",
+    name="text_to_speech",
     model="gemini-2.5-flash",
     instruction="When user wants text spoken aloud, use speak_text(). For audio file list, use list_audio().",
     tools=[speak_text, list_audio]
